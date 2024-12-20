@@ -1,0 +1,20 @@
+# General
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+Thumbs.db
+
+# Virtual environment
+.venv/
+.env
+
+# IDE-specific files
+.idea/
+.vscode/
+
+# Testing
+.coverage
+*.log
+htmlcov/
