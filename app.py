@@ -1,21 +1,41 @@
 #!/usr/bin/env python
 import json
 import asyncio
+import logging
+import itertools
 
 from websockets.asyncio.server import serve
 from websockets.exceptions import ConnectionClosedOK
 from connect4 import PLAYER1, PLAYER2, Connect4
 
+logging.basicConfig(format="%(message)s", level=logging.DEBUG)
+
 async def handler(websocket):
-    for player, column, row in [
-        (PLAYER1, 3, 0),
-        (PLAYER2, 3, 1),
-        (PLAYER1, 4, 0),
-        (PLAYER2, 4, 1),
-        (PLAYER1, 2, 0),
-        (PLAYER2, 1, 0),
-        (PLAYER1, 5, 0),
-    ]:
+    # initalize game
+    game = Connect4()
+
+    # taking alternate turns with same browser,
+    # TODO: implement this without itertools to understand the code
+    turns = itertools.cycle([PLAYER1, PLAYER2])
+    player = next(turns)
+
+    async for message in websocket:
+        event = json.loads(message)
+        assert event["type"] == "play"
+        column = event["column"]
+
+        try:
+            row = game.play(player, column)
+        except ValueError as exc:
+            # send error message to client
+            event = {
+                "type": "error",
+                "message": str(exc),
+            }
+            await websocket.send(json.dumps(event))
+            continue
+    
+        # Send a "play" event to update the UI
         event = {
             "type": "play",
             "player": player,
@@ -23,14 +43,17 @@ async def handler(websocket):
             "row": row,
         }
         await websocket.send(json.dumps(event))
-        # 7 moves appear at .5 second intervals.
-        await asyncio.sleep(.5)
-    # async for message in websocket:
-    #     try:
-    #         print(message)
-    #     except ConnectionClosedOK:
-    #         print("Connection closed.")
-    #         break
+
+        # if move wins, send win event
+        if game.winner is not None:
+            event = {
+                "type": "win",
+                "player": game.winner,
+            }
+            await websocket.send(json.dumps(event))
+
+        # iterate list
+        player = next(turns)
 
 
 
