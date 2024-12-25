@@ -42,12 +42,22 @@ function receiveMoves(board, websocket) {
   });
 }
 
+function initGame(websocket) {
+  websocket.addEventListener("open", () => {
+    const event = {
+      type: "init",
+    };
+    websocket.send(JSON.stringify(event));
+  });
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   // Initialize the UI.
   const board = document.querySelector(".board");
   createBoard(board);
   // open websocket connection and register event handlers
   const websocket = new WebSocket("ws://localhost:8001/");
+  initGame(websocket);
   receiveMoves(board, websocket);
   sendMoves(board, websocket);
 });
