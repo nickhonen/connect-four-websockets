@@ -21,9 +21,10 @@ async def error(websocket, message):
     await websocket.send(json.dumps(event))
 
 async def play(websocket, game, player, connected):
-    turns = itertools.cycle([PLAYER1, PLAYER2])
-    player = next(turns)
+    """
+    Receive and process moves from a player.
 
+    """
     async for message in websocket:
         event = json.loads(message)
         assert event["type"] == "play"
@@ -52,9 +53,7 @@ async def play(websocket, game, player, connected):
                 "player": game.winner,
             }
             await websocket.send(json.dumps(event))
-
-        # iterate list
-        player = next(turns)
+            broadcast(connected, json.dumps(event))
 
 
 async def start(websocket):
