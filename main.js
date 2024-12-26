@@ -61,12 +61,24 @@ function initGame(websocket) {
   });
 }
 
+function getServer() {
+  // maybe shouldnt use hostname
+  const url = window.location.hostname;
+  if (url === "connect4-websockets.github.io") {
+    return "wss://connect4-websockets.fly.dev/";
+  } else if (url === "localhost") {
+    return "ws://localhost:8080/";
+  } else {
+    throw new Error(`Unknown server: ${url}`);
+  }
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   // Initialize the UI.
   const board = document.querySelector(".board");
   createBoard(board);
   // open websocket connection and register event handlers
-  const websocket = new WebSocket("ws://localhost:8080/");
+  const websocket = new WebSocket(getServer());
   initGame(websocket);
   receiveMoves(board, websocket);
   sendMoves(board, websocket);
