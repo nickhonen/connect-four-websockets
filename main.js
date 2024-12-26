@@ -78,7 +78,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const board = document.querySelector(".board");
   createBoard(board);
   // open websocket connection and register event handlers
-  const websocket = new WebSocket("ws://localhost:8080/");
+  const websocket = new WebSocket("wss://connect4-websockets.fly.dev/");
   // const websocket = new WebSocket(getServer());
   initGame(websocket);
   receiveMoves(board, websocket);
