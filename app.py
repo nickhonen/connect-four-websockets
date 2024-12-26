@@ -4,6 +4,8 @@ import asyncio
 import logging
 import itertools
 import secrets
+import signal
+import http
 
 from websockets.asyncio.server import serve, broadcast
 from websockets.exceptions import ConnectionClosedOK
@@ -113,62 +115,26 @@ async def handler(websocket):
         # first player starts a new game.
         await start(websocket)
 
-
-
-    
-
-
-
-# async def handler(websocket):
-#     # initalize game
-#     game = Connect4()
-
-#     # taking alternate turns with same browser,
-#     # TODO: implement this without itertools to understand the code
-#     turns = itertools.cycle([PLAYER1, PLAYER2])
-#     player = next(turns)
-
-#     async for message in websocket:
-#         event = json.loads(message)
-#         assert event["type"] == "play"
-#         column = event["column"]
-
-#         try:
-#             row = game.play(player, column)
-#         except ValueError as exc:
-#             # send error message to client
-#             event = {
-#                 "type": "error",
-#                 "message": str(exc),
-#             }
-#             await websocket.send(json.dumps(event))
-#             continue
-    
-#         # Send a "play" event to update the UI
-#         event = {
-#             "type": "play",
-#             "player": player,
-#             "column": column,
-#             "row": row,
-#         }
-#         await websocket.send(json.dumps(event))
-       
-#         # if move wins, send win event
-#         if game.winner is not None:    
-#             event = {
-#                 "type": "win",
-#                 "player": game.winner,
-#             }
-#             await websocket.send(json.dumps(event))
-
-#         # iterate list
-#         player = next(turns)
-
-
+# Fly implementation stuff, was working before this.
+def health_check(connection, request):
+    if request.path == "/healthz":
+        return connection.respond(http.HTTPStatus.OK, "OK\n")
 
 async def main():
-    async with serve(handler, "", 8001):
-        await asyncio.get_running_loop().create_future()  # run forever
+    loop = asyncio.get_running_loop()
+    stop = loop.create_future()
+    loop.add_signal_handler(signal.SIGTERM, stop.set_result, None)
+
+    async with serve(
+        handler,
+        "",
+        8080,
+        process_request=health_check
+    ):
+        await stop
+
+    # async with serve(handler, "", 8001):
+    #     await asyncio.get_running_loop().create_future()  # run forever
 
 
 if __name__ == "__main__":
