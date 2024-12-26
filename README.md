@@ -6,3 +6,10 @@ tried to do everything myself. Most likely will add real time chat and some othe
 ## hosted frontend
 
 Hosted on fly.io, link tbd.
+
+## TODO
+- [ ] add real time chat (all chat)
+- [ ] add spectator mode
+- [ ] add way to actually click join link and have that generate room
+- [ ] setup github actions ci/cd (real stretch goal)
+- [ ] win counter? (also real stretch goal and would need a db)

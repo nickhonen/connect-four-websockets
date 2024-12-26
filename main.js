@@ -64,7 +64,7 @@ function initGame(websocket) {
 function getServer() {
   // maybe shouldnt use hostname
   const url = window.location.hostname;
-  if (url === "connect4-websockets.github.io") {
+  if (url === "nickhonen.github.io") {
     return "wss://connect4-websockets.fly.dev/";
   } else if (url === "localhost") {
     return "ws://localhost:8080/";
