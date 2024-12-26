@@ -25,6 +25,10 @@ function receiveMoves(board, websocket) {
   websocket.addEventListener("message", ({ data }) => {
     const event = JSON.parse(data);
     switch (event.type) {
+      case "init":
+        // Create link for inviting the second player.
+        document.querySelector(".join").href = "?join=" + event.join;
+        break;
       case "play":
         // update UI with move
         playMove(board, event.player, event.column, event.row);
@@ -44,9 +48,15 @@ function receiveMoves(board, websocket) {
 
 function initGame(websocket) {
   websocket.addEventListener("open", () => {
-    const event = {
-      type: "init",
-    };
+    const params = new URLSearchParams(window.location.search);
+    let event = { type: "init" };
+    event.params = params;
+    if (params.has("join")) {
+      // if the person is clicking the join link, add join to event
+      event.join = params.get("join");
+    } else {
+      // first player starts new game
+    }
     websocket.send(JSON.stringify(event));
   });
 }
