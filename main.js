@@ -78,14 +78,14 @@ window.addEventListener("DOMContentLoaded", () => {
   const board = document.querySelector(".board");
   createBoard(board);
   // open websocket connection and register event handlers
-  const websocket = new WebSocket("wss://connect4-websockets.fly.dev/");
-  // const websocket = new WebSocket(getServer());
+  // const websocket = new WebSocket("wss://connect4-websockets.fly.dev/");
+  const websocket = new WebSocket(getServer());
   initGame(websocket);
   receiveMoves(board, websocket);
   sendMoves(board, websocket);
 });
 
-websocket.addEventListener("message", ({ data }) => {
-  const event = JSON.parse(data);
-  // do something with event
-});
+// websocket.addEventListener("message", ({ data }) => {
+//   const event = JSON.parse(data);
+//   // do something with event
+// });
