@@ -47,7 +47,7 @@ body {
 /* Connect Four board */
 
 .board {
-  background-color: blue;
+  background-color: black;
   display: flex;
   flex-direction: row;
   padding: 0 10px;
@@ -56,7 +56,7 @@ body {
 
 .board::before,
 .board::after {
-  background-color: blue;
+  background-color: black;
   content: "";
   height: 720px;
   width: 20px;
@@ -100,6 +100,6 @@ body {
   background-color: orange;
 }
 
-.pink{
-  background-color: rgb(205, 95, 194);
+.pink {
+  background-color: pink;
 }

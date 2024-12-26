@@ -8,6 +8,9 @@ tried to do everything myself. Most likely will add real time chat and some othe
 Hosted on fly.io, link tbd.
 
 ## TODO
+
+- [ ] make people make usernames
+- [ ] add message when people join and who youre playing. Welc
 - [ ] add real time chat (all chat)
 - [ ] add spectator mode
 - [ ] add way to actually click join link and have that generate room
